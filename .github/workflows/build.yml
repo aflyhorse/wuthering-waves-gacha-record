@@ -1,0 +1,23 @@
+name: build
+
+on:
+  push:
+    branches:
+      - ci/detect-more-exe
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build
+        run: cargo build --release --locked
+      - name: Package
+        shell: pwsh
+        run: Compress-Archive -Path target/release/wuthering-waves-gacha-record.exe -DestinationPath wuthering-waves-gacha-record.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wuthering-waves-gacha-record-windows-x64
+          path: wuthering-waves-gacha-record.zip
